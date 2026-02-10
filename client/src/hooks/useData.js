@@ -52,3 +52,28 @@ export const useProjects = (category = 'All') => {
 
     return { projects, loading, error, refetch: fetchProjects };
 };
+
+export const useFeaturedProjects = () => {
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetchFeatured();
+    }, []);
+
+    const fetchFeatured = async () => {
+        try {
+            const response = await api.get('/projects');
+            if (response.data.success) {
+                setProjects(response.data.data.filter(p => p.featured));
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { projects, loading, error };
+};

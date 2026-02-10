@@ -2,6 +2,7 @@ import { useProfile } from '../hooks/useData';
 import Hero from '../components/Hero';
 import StatsStrip from '../components/StatsStrip';
 import ServicesGrid from '../components/ServicesGrid';
+import FeaturedProjects from '../components/FeaturedProjects';
 
 const Home = () => {
     const { profile, loading } = useProfile();
@@ -19,6 +20,7 @@ const Home = () => {
             <Hero profile={profile} />
             <StatsStrip stats={profile?.stats} />
             <ServicesGrid services={profile?.services} />
+            <FeaturedProjects />
         </>
     );
 };

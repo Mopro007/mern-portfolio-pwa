@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import {
     Plus, Edit2, Trash2, Save, X, Loader2,
-    CheckCircle, AlertCircle, ExternalLink, Github
+    CheckCircle, AlertCircle, ExternalLink, Github,
+    Upload, Image
 } from 'lucide-react';
 
 const ProjectManager = () => {
@@ -16,6 +17,8 @@ const ProjectManager = () => {
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(null);
     const [status, setStatus] = useState({ type: '', message: '' });
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
     const emptyProject = {
         title: '',
@@ -59,6 +62,38 @@ const ProjectManager = () => {
 
     const handleChange = (field, value) => {
         setEditingProject(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+        const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', uploadPreset);
+
+        setUploading(true);
+        try {
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+                { method: 'POST', body: formData }
+            );
+            const data = await response.json();
+            if (data.secure_url) {
+                handleChange('image_url', data.secure_url);
+            } else {
+                throw new Error(data.error?.message || 'Upload failed');
+            }
+        } catch (error) {
+            console.error('Upload failed:', error);
+            setStatus({ type: 'error', message: 'Image upload failed. Please try again.' });
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
     };
 
     const handleTechStack = (value) => {
@@ -330,14 +365,39 @@ const ProjectManager = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-white font-medium mb-2">Image URL</label>
-                                    <input
-                                        type="text"
-                                        value={editingProject?.image_url || ''}
-                                        onChange={(e) => handleChange('image_url', e.target.value)}
-                                        placeholder="/project-image.png"
-                                        className="input-field"
-                                    />
+                                    <label className="block text-white font-medium mb-2">Project Image</label>
+                                    <div className="flex items-center gap-4">
+                                        <input
+                                            type="text"
+                                            value={editingProject?.image_url || ''}
+                                            readOnly
+                                            className="input-field flex-1 bg-dark-bg/50"
+                                            placeholder="No image uploaded"
+                                        />
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleImageUpload}
+                                            className="hidden"
+                                            accept="image/*"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            disabled={uploading}
+                                            className="btn-outline flex items-center gap-2 whitespace-nowrap"
+                                        >
+                                            {uploading ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
+                                            {uploading ? 'Uploading...' : 'Upload'}
+                                        </button>
+                                    </div>
+                                    {editingProject?.image_url && (
+                                        <img
+                                            src={editingProject.image_url}
+                                            alt="Preview"
+                                            className="mt-4 w-full max-h-48 object-cover rounded-lg border border-dark-border"
+                                        />
+                                    )}
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">

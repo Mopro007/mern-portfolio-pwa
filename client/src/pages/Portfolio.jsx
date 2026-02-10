@@ -55,8 +55,8 @@ const Portfolio = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className={`px-6 py-2.5 rounded-lg font-medium transition-all duration-300 ${activeCategory === category
-                                    ? 'bg-accent-green text-dark-bg'
-                                    : 'bg-dark-card border border-dark-border text-white hover:border-accent-green'
+                                ? 'bg-accent-green text-dark-bg'
+                                : 'bg-dark-card border border-dark-border text-white hover:border-accent-green'
                                 }`}
                         >
                             {category}
@@ -68,10 +68,10 @@ const Portfolio = () => {
                 {projects.length > 0 ? (
                     <motion.div
                         layout
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto"
                     >
-                        {projects.map((project) => (
-                            <ProjectCard key={project._id} project={project} />
+                        {projects.map((project, index) => (
+                            <ProjectCard key={project._id} project={project} index={index} />
                         ))}
                     </motion.div>
                 ) : (
