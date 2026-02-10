@@ -8,6 +8,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const projectRoutes = require('./routes/projectRoutes');
+const healthRoutes = require('./routes/healthRoutes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/health', healthRoutes);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
