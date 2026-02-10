@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 
 export const useProfile = () => {
     const [profile, setProfile] = useState(null);
@@ -12,7 +12,7 @@ export const useProfile = () => {
 
     const fetchProfile = async () => {
         try {
-            const response = await axios.get('/api/profile');
+            const response = await api.get('/api/profile');
             if (response.data.success) {
                 setProfile(response.data.data);
             }
@@ -39,7 +39,7 @@ export const useProjects = (category = 'All') => {
         try {
             setLoading(true);
             const url = category === 'All' ? '/api/projects' : `/api/projects?category=${category}`;
-            const response = await axios.get(url);
+            const response = await api.get(url);
             if (response.data.success) {
                 setProjects(response.data.data);
             }

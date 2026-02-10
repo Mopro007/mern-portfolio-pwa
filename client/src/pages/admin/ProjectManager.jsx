@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import {
     Plus, Edit2, Trash2, Save, X, Loader2,
@@ -35,7 +35,7 @@ const ProjectManager = () => {
 
     const fetchProjects = async () => {
         try {
-            const response = await axios.get('/api/projects');
+            const response = await api.get('/api/projects');
             if (response.data.success) {
                 setProjects(response.data.data);
             }
@@ -71,16 +71,13 @@ const ProjectManager = () => {
         setStatus({ type: '', message: '' });
 
         try {
-            const token = getToken();
-            const headers = { Authorization: `Bearer ${token}` };
-
             if (editingProject._id) {
                 // Update existing
-                await axios.put(`/api/projects/${editingProject._id}`, editingProject, { headers });
+                await api.put(`/api/projects/${editingProject._id}`, editingProject);
                 setStatus({ type: 'success', message: 'Project updated successfully!' });
             } else {
                 // Create new
-                await axios.post('/api/projects', editingProject, { headers });
+                await api.post('/api/projects', editingProject);
                 setStatus({ type: 'success', message: 'Project created successfully!' });
             }
 
@@ -101,9 +98,7 @@ const ProjectManager = () => {
 
         setDeleting(id);
         try {
-            await axios.delete(`/api/projects/${id}`, {
-                headers: { Authorization: `Bearer ${getToken()}` }
-            });
+            await api.delete(`/api/projects/${id}`);
             await fetchProjects();
         } catch (error) {
             console.error('Error deleting project:', error);
@@ -267,8 +262,8 @@ const ProjectManager = () => {
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         className={`flex items-center gap-2 p-4 rounded-lg ${status.type === 'success'
-                                                ? 'bg-accent-green/10 text-accent-green border border-accent-green/30'
-                                                : 'bg-red-500/10 text-red-400 border border-red-500/30'
+                                            ? 'bg-accent-green/10 text-accent-green border border-accent-green/30'
+                                            : 'bg-red-500/10 text-red-400 border border-red-500/30'
                                             }`}
                                     >
                                         {status.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}

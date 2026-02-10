@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import { Save, Loader2, CheckCircle, AlertCircle, Plus, Trash2, Upload, X } from 'lucide-react';
 import * as Icons from 'lucide-react';
@@ -64,7 +64,7 @@ const DynamicList = ({ title, items, onAdd, onRemove, onChange, fields, iconPick
     );
 };
 
-const FileUpload = ({ label, value, onChange, token }) => {
+const FileUpload = ({ label, value, onChange }) => {
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef(null);
 
@@ -77,10 +77,9 @@ const FileUpload = ({ label, value, onChange, token }) => {
 
         setUploading(true);
         try {
-            const response = await axios.post('/api/profile/upload', formData, {
+            const response = await api.post('/api/profile/upload', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`
+                    'Content-Type': 'multipart/form-data'
                 }
             });
             if (response.data.success) {
@@ -130,7 +129,6 @@ const FileUpload = ({ label, value, onChange, token }) => {
 
 const ProfileManager = () => {
     const { getToken } = useAuth();
-    const token = getToken();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -142,7 +140,7 @@ const ProfileManager = () => {
 
     const fetchProfile = async () => {
         try {
-            const response = await axios.get('/api/profile');
+            const response = await api.get('/api/profile');
             if (response.data.success) {
                 // Ensure arrays exist
                 const data = response.data.data;
@@ -195,9 +193,7 @@ const ProfileManager = () => {
         setStatus({ type: '', message: '' });
 
         try {
-            const response = await axios.put('/api/profile', profile, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.put('/api/profile', profile);
 
             if (response.data.success) {
                 setStatus({ type: 'success', message: 'Profile updated successfully!' });
@@ -303,13 +299,11 @@ const ProfileManager = () => {
                     label="Profile Image"
                     value={profile?.profile_image_url}
                     onChange={(url) => handleChange('profile_image_url', url)}
-                    token={token}
                 />
                 <FileUpload
                     label="Resume (PDF)"
                     value={profile?.resume_url}
                     onChange={(url) => handleChange('resume_url', url)}
-                    token={token}
                 />
             </div>
 
