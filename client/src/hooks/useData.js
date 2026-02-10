@@ -12,7 +12,7 @@ export const useProfile = () => {
 
     const fetchProfile = async () => {
         try {
-            const response = await api.get('/api/profile');
+            const response = await api.get('/profile');
             if (response.data.success) {
                 setProfile(response.data.data);
             }
@@ -38,7 +38,7 @@ export const useProjects = (category = 'All') => {
     const fetchProjects = async () => {
         try {
             setLoading(true);
-            const url = category === 'All' ? '/api/projects' : `/api/projects?category=${category}`;
+            const url = category === 'All' ? '/projects' : `/projects?category=${category}`;
             const response = await api.get(url);
             if (response.data.success) {
                 setProjects(response.data.data);

@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('adminToken');
         if (token) {
             try {
-                await api.get('/api/auth/verify');
+                await api.get('/auth/verify');
                 setIsAuthenticated(true);
             } catch (error) {
                 localStorage.removeItem('adminToken');
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (username, password) => {
         try {
-            const response = await api.post('/api/auth/login', { username, password });
+            const response = await api.post('/auth/login', { username, password });
             if (response.data.success) {
                 localStorage.setItem('adminToken', response.data.token);
                 setIsAuthenticated(true);

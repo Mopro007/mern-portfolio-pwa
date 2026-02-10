@@ -35,7 +35,7 @@ const ProjectManager = () => {
 
     const fetchProjects = async () => {
         try {
-            const response = await api.get('/api/projects');
+            const response = await api.get('/projects');
             if (response.data.success) {
                 setProjects(response.data.data);
             }
@@ -73,11 +73,11 @@ const ProjectManager = () => {
         try {
             if (editingProject._id) {
                 // Update existing
-                await api.put(`/api/projects/${editingProject._id}`, editingProject);
+                await api.put(`/projects/${editingProject._id}`, editingProject);
                 setStatus({ type: 'success', message: 'Project updated successfully!' });
             } else {
                 // Create new
-                await api.post('/api/projects', editingProject);
+                await api.post('/projects', editingProject);
                 setStatus({ type: 'success', message: 'Project created successfully!' });
             }
 
@@ -98,7 +98,7 @@ const ProjectManager = () => {
 
         setDeleting(id);
         try {
-            await api.delete(`/api/projects/${id}`);
+            await api.delete(`/projects/${id}`);
             await fetchProjects();
         } catch (error) {
             console.error('Error deleting project:', error);

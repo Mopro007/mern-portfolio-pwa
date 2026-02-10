@@ -77,7 +77,7 @@ const FileUpload = ({ label, value, onChange }) => {
 
         setUploading(true);
         try {
-            const response = await api.post('/api/profile/upload', formData, {
+            const response = await api.post('/profile/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -140,7 +140,7 @@ const ProfileManager = () => {
 
     const fetchProfile = async () => {
         try {
-            const response = await api.get('/api/profile');
+            const response = await api.get('/profile');
             if (response.data.success) {
                 // Ensure arrays exist
                 const data = response.data.data;
@@ -193,7 +193,7 @@ const ProfileManager = () => {
         setStatus({ type: '', message: '' });
 
         try {
-            const response = await api.put('/api/profile', profile);
+            const response = await api.put('/profile', profile);
 
             if (response.data.success) {
                 setStatus({ type: 'success', message: 'Profile updated successfully!' });

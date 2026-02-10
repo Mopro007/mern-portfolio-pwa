@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
     plugins: [
         react(),
-        VitePWA({
+        /* VitePWA({
             registerType: 'autoUpdate',
             includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
             manifest: {
@@ -36,9 +36,9 @@ export default defineConfig({
                 ]
             },
             workbox: {
-                globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}']
+                globPatterns: ['**\/*.{js,css,html,ico,png,svg,woff2}']
             }
-        })
+        }) */
     ],
     server: {
         port: 3000,
